@@ -1,0 +1,260 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/highcharts/highcharts.js"></script>
+
+<dom-module id="dashboard-draw">
+
+<template>
+		<div class$="[[dataClass]]" style=" -webkit-box-shadow:0px 1px 4px 0px rgba(0, 0, 0, 0.1);box-shadow:0px 1px 4px 0px rgba(0, 0, 0, 0.1)">
+			 <div class="panel common-drop-shadow bc-panel" id="panelChart">
+				<div class="panel-heading bc-panel">
+				  <h3 class="panel-title">[[heading]]</h3>
+                
+
+
+				</div>
+				<div class="panel-body" id="chart">
+				  
+				</div>
+				<div class="panel-loading"><div class="loader-wrapper active"><div class="loader-layer loader-blue-only"><div class="loader-circle-left"><div class="circle"></div></div><div class="loader-circle-gap"></div><div class="loader-circle-right"><div class="circle"></div></div></div></div></div>
+			  </div>
+		</div>
+	<div id="container" style="height: 300px;width: 400px"></div>
+</template>
+<script>
+    var workboardData = []; //Will be used to store JSON data.
+    var kettleData = [];  //Will be used to store JSON data.
+    var visualData = []; //Will be used to store JSON data.
+    var option = []; //Will be used for the high charts.
+    var workboardColumnInfo = [];
+    //var vData;
+    var workboard=[];
+    var visualisation=[];
+	var visualization;
+    var kettle=[]; 
+    var workboardDataConfiguration = [];
+    var decryptedData = [];
+    var kettleResultset = [];		
+    var visualisationConfiguration =[];
+	var chartObj;
+
+    Polymer({
+        is:"dashboard-draw",
+		properties:{
+				localHeight:{
+					type:Number,
+					value:5
+				},
+				dataGsHeight:{
+					type:Number,
+					value:5,
+					notify:true,
+					reflectToAttribute:true
+				},
+				dataClass:{
+					type:String,
+					value:'grid-stack-item-content',
+					readonly:true
+				},
+				configuration:{
+					type:Object,
+					value:function(){
+						return {};
+					}
+				},
+				heading:{
+					type:String,
+					value:'',
+					
+				},
+				subHeading:{
+					type:String,
+					value:'',
+					readonly:true
+				},
+				dataId:{
+					type:String,
+					value:''
+				},
+				data:{
+					type:Object,
+					value:function(){
+						return {};
+					},
+					observer:'__dataChanged'
+				}
+		},
+        createDashboard:function(userId,workboard_id)
+        {
+            var self=this;
+            //var requestData ={"data":{"userId":userId,"workboard-id":workboard_id,"params":{"31":"4"}}}; 
+            //console.log(userId);
+            //console.log(workboard_id);
+            self.loadingStart(); 
+			//spinner.active = true;
+			//spinner.hidden = false;
+			//console.log("loading start");
+            $.when(
+                    workboardData = getWorkboardData(userId,workboard_id),
+                    visualData = getVisualisationData(userId,workboard_id),
+                    kettleData = getKettleData(userId,workboard_id)
+					
+			).done(function(){
+                     self.loadingStop();
+					//spinner.active = false;
+					//spinner.hidden = true;
+                     //console.log("Loading stop");
+                 });
+            $('#container').css("display","block");
+            self.createDashboard1();
+        
+        },
+        createDashboard1:function()
+        {    
+            //console.log("createDashboard1:function");
+              var self=this;
+              $.each(workboardData.data,function(index,value)
+              {
+               //console.log(index);
+			   
+					workboard.push(value.configuration);
+					//console.log("wd");
+					//console.log(workboardData)
+					self.configuration=workboardData.data;
+                    //console.log(workboard);
+                    workboardColumnInfo.push(workboardData.data[index].configuration.columnInfo);
+                    $.each(visualData.data,function(i,e)
+                   {
+                          if(index==i)                                   
+                              visualisation.push(e.configuration);
+                   });                 
+                   $.each(kettleData.data,function(i,e)
+                   {
+                          if(index==i)
+                              kettle.push(e); 
+                   });
+				   this.dataId = index;
+				   //self.normalize(visualData,index,kettleData);
+					//console.log(JSONfn.stringify(visualData[index].configuration.result));
+					//option = JSONfn.stringify(visualData.data[index].configuration.result);
+					//self.processChartData(index,workboard,visualisation,kettle,option,workboardColumnInfo);             
+					self.draw(index);
+              }); 
+        },
+		resize:function(){
+			console.log("resize function is called");
+			console.log(chartObj);
+			if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+				var chart= $(this.$.panelChart);
+				console.log("if part of resize function is called");
+				this.chartObj.setSize(chart.width()-50,chart.height()-50);
+				this.chartObj.reflow();
+			}
+		},
+		draw: function(dataId){
+			var self=this;
+			//this.lodingStart();
+			try{
+				//var visualization=JSONfn.parse(this.visualData);
+				var visualization=visualData.data;
+				if(kettleData.data.hasOwnProperty(dataId) && typeof(kettleData.data[dataId]) === 'object' && visualization.hasOwnProperty(dataId)  && typeof(visualization[dataId]) === 'object'){
+					console.log("here")
+					console.log(this.configuration[dataId])
+					var options=this.normalize(visualization[dataId],this.customPreProcessor(kettleData.data[dataId].resultSet,this.configuration[dataId].configuration.columnInfo),dataId);
+					
+						if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length) {
+							this.chartObj.destroy();
+						}
+							console.log(visualization[dataId].configuration.chartType);
+							console.log("At the end ");
+							console.log(options);
+							console.log(visualization[dataId].configuration.chartType);
+							chartObj=new Highcharts[visualization[dataId].configuration.chartType](options,function(){
+								//
+								console.log("ChartObj");
+								console.log(chartObj);
+								self.resize();
+								//self.loadingStop();
+							});
+							console.log("chartobj")
+							console.log(chartObj)
+							
+				}
+			}
+			catch(e){
+				console.error(e)
+			}
+		},		
+		customPreProcessor:function(data,temp){
+			var func=new Function('data',atob(temp));
+			return func(data);
+		},
+		normalize:function(visualization,data,dataId){
+		console.log("in normalize func");
+		//console.log(visualization);
+			var result=visualization.configuration.result;
+			
+			result['title']={text:""};
+			//var chart= $(panelChart); 
+			var div=document.createElement('paper-material');
+			div.setAttribute("elevation","2");
+			$(div).css("background-color","white");
+			$(div).css("height","auto");                
+			$(div).css("margin","10px");
+			$(div).css("margin-bottom","20px");
+			$(div).css("padding","5px");
+			console.log("index is:");
+			console.log(dataId);
+			div.setAttribute("id","id"+dataId);
+			var title = document.createElement("h3");
+			title.innerHTML="Chart";
+			div.appendChild(title);
+			var container=document.getElementById("container");
+			container.appendChild(div);
+			var id ="id"+dataId;
+			console.log("id");
+			console.log(id);
+			console.log(result);
+			if(result.hasOwnProperty('chart')){
+			  delete result.chart['renderTo'];
+					result.chart.renderTo=id;
+					console.log("result.chart.renderTo");
+					console.log(result.chart.renderTo);
+			  }else{
+				 result.chart={
+				  renderTo: id,
+				}
+			  }
+				result['credits']={"enabled": false};
+				result["exporting"]={enabled:false};
+				result['series']=data.series;
+				if(data.hasOwnProperty('xAxisCategories') && data['xAxisCategories'].length){
+					if(result.hasOwnProperty('xAxis')){
+						result['xAxis'].categories=data['xAxisCategories'];
+					}else{
+						result['xAxis']={categories:data['xAxisCategories']};
+					}
+				}
+				
+				if(data.hasOwnProperty('subtitleText') && data['subtitleText'].length){
+					if(result.hasOwnProperty('subtitle')){
+						result['subtitle'].text=data['subtitleText'];
+					}else{
+						result['subtitle']={text:data['subtitleText']};
+					}
+				}
+				return result;
+		},
+
+
+       loadingStart: function(){
+           //console.log("Loader function called");
+           //document.getElementById('loader').style.display="block";
+       },
+       loadingStop: function(){
+           //console.log("Loader function stopped");
+           //document.getElementById('loader').style.display="none";
+       }
+    })
+</script>
+</dom-module>
