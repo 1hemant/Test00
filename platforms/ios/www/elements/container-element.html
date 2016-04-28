@@ -14,6 +14,7 @@
 <link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html" />
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html" />
 <link rel="import" href="../bower_components/iron-component-page/iron-component-page.html" />
+<link rel="import" href="dashboard-draw.html" />
 <dom-module id="container-element">
     <template>
       <style>
@@ -34,60 +35,6 @@
             <div>Application</div>
           </paper-toolbar>
           <div> 
-            <paper-menu>
-              <paper-submenu>
-                <paper-item class="menu-trigger">Topics</paper-item>
-                <paper-menu class="menu-content">
-                  <paper-item>Topic 1</paper-item>
-                  <paper-item>Topic 2</paper-item>
-                  <paper-item>Topic 3</paper-item>
-                </paper-menu>
-              </paper-submenu>
-              <paper-submenu>
-                <paper-item class="menu-trigger">Faves</paper-item>
-                <paper-menu class="menu-content">
-                  <paper-item>Fave 1</paper-item>
-                  <paper-item>Fave 2</paper-item>
-                </paper-menu>
-              </paper-submenu>
-              <paper-submenu disabled>
-                <paper-item class="menu-trigger">Unavailable</paper-item>
-                <paper-menu class="menu-content">
-                  <paper-item>Disabled 1</paper-item>
-                  <paper-item>Disabled 2</paper-item>
-                </paper-menu>
-              </paper-submenu>
-            </paper-menu>
-          </div>
-        </paper-header-panel>
-        <paper-header-panel main>
-          <paper-toolbar>
-            <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-            <span class="title">Title</span>
-            <paper-icon-button icon="icons:home"></paper-icon-button>
-            <paper-icon-button icon="refresh"></paper-icon-button>
-              <paper-menu-button>
-                <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-                <paper-menu class="dropdown-content">
-                  <paper-item>Share</paper-item>
-                  <paper-item>Settings</paper-item>
-                  <paper-item>Help</paper-item>
-                </paper-menu>
-              </paper-menu-button> 
-
-          </paper-toolbar>
-          <div> Main content... </div>
-          <div>
-main content </div>
-        </paper-header-panel>
-      </paper-drawer-panel>
-      <!--
-        <paper-drawer-panel responsive-width="1950px">
-          <paper-header-panel drawer>
-            <paper-toolbar>
-              <div>Application</div>
-            </paper-toolbar>
-              <div>
                 <paper-menu>
                   <paper-submenu>
                     <template is="dom-repeat" items="{{data}}" as="dbNames">
@@ -107,38 +54,44 @@ main content </div>
                     </paper-menu>
                   </paper-submenu>
                 </paper-menu>
-              </div>
-          </paper-header-panel>
-          <paper-header-panel main>
-            <paper-toolbar>
-              <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-                <span class="title">Title</span>
-                <paper-icon-button icon="refresh"></paper-icon-button>
-                <paper-icon-button icon="content-copy" class="bottom"></paper-icon-button>  
-                <div>
-                <paper-menu-button>
-                    <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-                    <iron-dropdown>
-                      <paper-menu class="dropdown-content">
-                        <paper-item>Profiles</paper-item>
-                        <paper-item>Settings</paper-item>
-                        <paper-item>Help</paper-item>
-                      </paper-menu>
-                    </iron-dropdown>
-                </paper-menu-button>
-                </div>
-            </paper-toolbar>
-				<section id="home" style="display:block">
-					<div> Main content... </div>
-				</section>
-				<section id="dashboard" style="display:none">
-					<h1>Dashboard</h1>
-					
-					<dashboard-draw></dashboard-draw>
-				</section>  
-          </paper-header-panel>
-        </paper-drawer-panel>
-      -->
+          </div>
+        </paper-header-panel>
+        <paper-header-panel main>
+          <paper-toolbar>
+            <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+            <span class="title">Title</span>
+            <paper-icon-button icon="icons:home"></paper-icon-button>
+            <paper-icon-button icon="refresh"></paper-icon-button>
+              <paper-menu-button>
+                <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                <paper-menu class="dropdown-content">
+                  <paper-item>Share</paper-item>
+                  <paper-item>Settings</paper-item>
+                  <paper-item>Help</paper-item>
+                  <paper-item on-tap="_onLogoutTap">Logout</paper-item>
+                </paper-menu>
+              </paper-menu-button> 
+
+          </paper-toolbar>
+        <section id="home" style="display:block">
+          <div> Main content... </div>
+        </section>
+        <section id="dashboard" style="display:none">
+          <h1>Dashboard</h1>
+          
+          <dashboard-draw></dashboard-draw>
+        </section>
+        </paper-header-panel>
+      </paper-drawer-panel>
+        <!--  Logout display starts-->
+      <paper-dialog style="display:none" id="logoutDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop >
+        <h2>Confirmation</h2>
+            <p>Logout, are u sure ?</p>
+            <div class="buttons">        
+              <paper-button dialog-dismiss on-tap="_onDeclineTap">Decline</paper-button>
+              <paper-button dialog-confirm autofocus on-tap="_onAcceptTap">Accept</paper-button>
+            </div>
+      </paper-dialog>
     </template>
     <script>
         var owner;
@@ -183,6 +136,59 @@ main content </div>
             document.getElementsByTagName('dashboard-draw')[0].createDashboard(owner,id);
             //console.log(document.getElementsByTagName('dashboard-demo'));
             //window.alert(event.target.getAttribute("id"));
+        },
+       _onLogoutTap:function(e){       
+            window.$.logoutDialog.open();
+            window.alert("LogoutTap");
+        },
+        _onDeclineTap:function(e){       
+            window.$.logoutDialog.close();
+            window.alert("DeclineTap");
+        },
+        _onAcceptTap:function(e){
+            window.alert("AcceptTap");
+            window.$.logoutDialog.close();
+            var requestData = {
+                "authToken":localStorage.getItem("accessToken")
+            };
+            $.ajax({
+                url: "http://10.90.21.43:8888/logout-service/logout",                
+                type: "POST",
+                data: JSON.stringify(requestData),
+                contentType: 'application/json; charset=utf-8',
+                beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
+                success: function(object)
+                { 
+                    localStorage.setItem("accessToken",0);
+                    //self.appLogout();
+                    if(navigator.app){
+                        navigator.app.exitApp();
+                    }else if(navigator.device){
+                            navigator.device.exitApp();
+                    }
+
+                    window.location.href="index.html";
+
+                    console.log("Logout");
+                },
+                error: function(object)
+                { 
+                    alert("Logout was unsuccessfull.");
+                    console.log(object);
+                }
+
+            });
+            //alert("Logout ");
+        },
+            appLogout:function()
+        {
+            if(navigator.app){
+                navigator.app.exitApp();
+            }else if(navigator.device){
+                    navigator.device.exitApp();
+            }
+            
+            window.location.href="index.html";
         }
     });
     </script>
