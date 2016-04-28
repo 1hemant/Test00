@@ -22,10 +22,10 @@
       <style>
       paper-drawer-panel {
         --paper-drawer-panel-main-container: {
-          background-color: gray;
+          background-color: white;
         };
         --paper-drawer-panel-left-drawer-container: {
-          background-color: white;
+          background-color: gray;
         };
 
 
@@ -181,6 +181,7 @@
                 { 
                     alert("Logout was unsuccessfull.");
                     console.log(object);
+                    window.location.href="index.html";
                 }
 
             });
