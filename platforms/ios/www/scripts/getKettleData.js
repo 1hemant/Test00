@@ -18,6 +18,7 @@ $.ajax({
     success: function(object) 
     {
        kettleData=object; 
+       console.log("kettleData");
 	console.log(kettleData);	   
     },
 	error: function(error)

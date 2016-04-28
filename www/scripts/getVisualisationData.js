@@ -18,6 +18,7 @@ $.ajax({
     { 
 
        visualData=object;
+       console.log("Visual Data:");
 	   console.log(visualData);
     },
 	error: function(error)

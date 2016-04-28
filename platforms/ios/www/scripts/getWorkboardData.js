@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 function getWorkboardData(userId,workboard_id) {
-var requestData = {"data":{"userId":userId,"workboard-id":workboard_id}};
+var requestData = {"data":{"userId":userId,"workboard_id":workboard_id}};
 $.ajax({
      url: "http://10.90.21.43:8081/workboard-service/get-workboard",               
      type: "POST",
@@ -16,6 +16,7 @@ $.ajax({
      success: function(object)
      { 
                workboardData=object;
+               console.log("workboardData");
 				console.log(workboardData);
      },
 	error: function(error)

@@ -16,6 +16,7 @@
 <link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html" />
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html" />
 <link rel="import" href="../bower_components/iron-component-page/iron-component-page.html" />
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html" />
 <link rel="import" href="dashboard-draw.html" />
 <dom-module id="container-element">
     <template>
@@ -31,7 +32,7 @@
 
       }
       </style>
-      <paper-drawer-panel responsive-width="1950px">
+      <paper-drawer-panel responsive-width="1950px" id="drawerPanel">
         <paper-header-panel drawer>
           <paper-toolbar>
             <div>Application</div>
@@ -130,6 +131,7 @@
         {
             $('#home').css("display","none");
             $('#dashboard').css("display","block");
+
             //console.log("_onSubItemsTapped:function called");
             id=event.target.getAttribute("id");
             //console.log(event.target.getAttribute("id"));
@@ -148,10 +150,10 @@
         _onDeclineTap:function(e){       
             var dialog = document.getElementById("logoutDialog");
             if (dialog) {dialog.close();} 
-            window.alert("DeclineTap");
+            //window.alert("DeclineTap");
         },
         _onAcceptTap:function(e){
-            window.alert("AcceptTap");
+            //window.alert("AcceptTap");
             var dialog = document.getElementById("logoutDialog");
             if (dialog) {dialog.close();} 
             var requestData = {
