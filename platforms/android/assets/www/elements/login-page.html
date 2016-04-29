@@ -1,0 +1,123 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- import the polymer custom element -->
+<link rel="import" href="../bower_components/iron-form/iron-form.html" />
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html" />
+<link rel="import" href="../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html" />
+<!-- import the custom css element -->
+
+<dom-module id="login-page" >
+    <template id="login-template" is="dom-bind">
+        <style>
+          /* CSS rules for your element */
+          form{
+                width: 380px;
+                margin: 4em auto;
+                padding: 3em 2em 2em 2em;
+                background: #fafafa;
+                border: 1px solid #ebebeb;
+                box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+            }
+        </style>
+  
+    <!-- local DOM for your element -->
+        <!-- This form is only used to display the elements -->
+        <form is="iron-form" method="get" action="/" id="loginForm">
+            <paper-input value="{{emailIdToPost::input}}" name="email" label="Email-ID" required auto-validate></paper-input>
+            <paper-input value="{{passwordToPost::input}}" name="password" label="Password" type="password" required auto-validate></paper-input>
+            <paper-checkbox name="read" required>You must check this box</paper-checkbox><br>
+            <paper-button raised on-tap="_delayedSubmit" disabled id="loginFormSubmit">
+                <paper-spinner id="spinner" hidden></paper-spinner>Submit</paper-button>
+            <paper-button raised on-tap="_reset">Reset</paper-button>
+            <div class="output"></div>
+        </form>
+        <iron-ajax
+            id="loginAjax"
+            url="https://rsh-analytics.thecarecloud.com/login-service-mobile/login"
+            headers='{"Content-Type": "application/json;charset=utf-8"}'
+            method="POST"
+            content-type="application/json"
+            handle-as="JSON"
+            on-response="_handleResponse"
+            on-request=""
+            on-error=""
+            timeout="300">
+        </iron-ajax>
+    </template>
+
+  <script>
+    // element registration
+    Polymer({
+      is: "login-page",
+      properties:{
+          emailIdToPost: {
+              value:'stiwari@netlink.com',
+              type: String,
+              notify: true
+          },
+          passwordToPost: {
+              value:'AA!11aaa',
+              type: String,
+              notify: true
+          }
+      },
+    /*
+    loginForm.addEventListener('change', function(event) {
+      // Validate the entire form to see if we should enable the `Submit` button.
+      loginFormSubmit.disabled = !loginForm.validate();
+    });*/
+        listeners:{
+            'loginForm.change': '_validateForm',
+            'loginForm.loginFormSubmit': '_ironFormSubmit'
+        },
+        _validateForm:function(event){
+            loginFormSubmit.disabled = !loginForm.validate();
+        },
+    _delayedSubmit:function(event){
+        var self=this;
+      spinner.active = true;
+      spinner.hidden = false;
+      loginFormSubmit.disabled = true;
+      // Simulate a slow server response.
+      setTimeout(function() {
+        self._ironFormSubmit();
+      }, 1000);
+      //var loginCredentials='email='+this.emailIdToPost+'&password='+this.passwordToPost;
+      //this.$.loginAjax.body=loginCredentials;
+      //console.log(loginCredentials);
+      /*
+      loginAjax.body={
+          'email':emailIdToPost,
+          'password':passwordToPost
+      },*/
+      //this.$.loginAjax.generateRequest();
+    },
+    
+    _reset:function(event) {
+      var form = Polymer.dom(event).localTarget.parentElement;
+      form.reset();
+      form.querySelector('.output').innerHTML = '';
+    },
+    _ironFormSubmit:function(event) {
+      spinner.active = false;
+      spinner.hidden = true;
+      loginFormSubmit.disabled = false;
+      //this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
+      console.log("Submit Clicked");
+      window.location.href="./elements/base-element.html"
+    },
+    _handleResponse:function(r){
+        console.log(r.detail.response);
+        if(r.detail.response==1){
+            console.log("Successful Login");
+        }else{
+            console.log("Login unsuccessful");
+        }
+    }
+
+    });
+  </script>
+
+</dom-module>

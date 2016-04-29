@@ -11,7 +11,9 @@
 
 <template>
 	<style>
-			
+			.highcharts-container{
+				width:350px;
+			}
 		.cssload-container{
 			position:relative;
 		}
@@ -174,30 +176,34 @@
             var self=this;
             self.loadingStart(); 
 			$.when(
-                    workboardData = getWorkboardData(userId,workboard_id),
-                    visualData = getVisualisationData(userId,workboard_id),
-                    kettleData = getKettleData(userId,workboard_id)
+                     getWorkboardData(userId,workboard_id),
+                     getVisualisationData(userId,workboard_id),
+                     getKettleData(userId,workboard_id)
 					
-			).done(function(){
-                     //self.loadingStop();
+			).done(function(workboardData,visualData,kettleData){
+				console.log("1");
+				$('#container').css("display","block");
+				$("#container").find("paper-material").remove();
+				self.createDashboard1();
 					
-                 });
-            $('#container').css("display","block");
-            $("#container").find("paper-material").remove();
-            self.createDashboard1();
+             });
+
         
         },
         createDashboard1:function()
         {    
-          var self=this;
-          $.each(workboardData.data,function(index,value)
-          {
-           	self.configuration=workboardData.data;
-                this.dataId = index;         
+        	console.log("2");
+			var self=this;
+			$.each(workboardData.data,function(index,value)
+			{
+				console.log("2.1");
+				self.configuration=workboardData.data;
+			    this.dataId = index;         
 				self.draw(index);
-          }); 
+			}); 
         },
 		resize:function(){
+			console.log("6");
 			if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
 				var chart= $(this.$.panelChart);
 				this.chartObj.setSize(chart.width()-50,chart.height()-50);
@@ -205,6 +211,7 @@
 			}
 		},
 		draw: function(dataId){
+			console.log("3");
 			var self=this;
 			//this.loadingStart();
 			try{
@@ -228,16 +235,19 @@
 			}
 		},		
 		customPreProcessor:function(data,temp){
+			console.log("4");
 			var func=new Function('data',atob(temp));
 			return func(data);
 		},
 		normalize:function(visualization,data,dataId){
+			console.log("5");
 			var result=visualization.configuration.result;
 			result['title']={text:""};
 			var div=document.createElement('paper-material');
 			div.setAttribute("elevation","2");
 			$(div).css("background-color","white");
-			$(div).css("height","auto");                
+			$(div).css("height","auto");
+			$(div).css("width","auto");                
 			$(div).css("margin","10px");
 			$(div).css("margin-bottom","20px");
 			$(div).css("padding","5px");

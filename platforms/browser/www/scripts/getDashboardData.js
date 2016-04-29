@@ -8,7 +8,7 @@
 function getDashboardData(userId,workboard_id) {
     var dashboardData;
     var requestData ={"data":{"userId":userId}};
-    $.ajax({
+    return $.ajax({
         url: "http://10.90.21.43:8081/repository-service/getRepository",
         type: "POST",
         data: JSON.stringify(requestData),
@@ -18,13 +18,14 @@ function getDashboardData(userId,workboard_id) {
 		//beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
         success: function(object)
         { 
-           dashboardData=object;     
+           dashboardData=object;  
+           //return dashboardData;   
         },
 		error: function(error)
 		{
 			alert('Error in getDashboardData;' + eval(error));
 		}
     });
-  return dashboardData;
+  
 }
  

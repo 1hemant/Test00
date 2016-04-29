@@ -18,6 +18,7 @@
 <link rel="import" href="../bower_components/iron-component-page/iron-component-page.html" />
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html" />
 <link rel="import" href="dashboard-draw.html" />
+
 <dom-module id="container-element">
     <template>
       <style>
@@ -26,7 +27,7 @@
           background-color: white;
         };
         --paper-drawer-panel-left-drawer-container: {
-          background-color: gray;
+          background-color: white;
         };
 
 
@@ -131,7 +132,7 @@
         {
             $('#home').css("display","none");
             $('#dashboard').css("display","block");
-
+            this.$.drawerPanel.togglePanel();
             //console.log("_onSubItemsTapped:function called");
             id=event.target.getAttribute("id");
             //console.log(event.target.getAttribute("id"));
@@ -183,7 +184,7 @@
                 { 
                     alert("Logout was unsuccessfull.");
                     console.log(object);
-                    window.location.href="index.html";
+                    //window.location.href="index.html";
                 }
 
             });

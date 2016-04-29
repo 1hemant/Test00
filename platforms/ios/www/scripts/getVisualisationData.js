@@ -6,7 +6,7 @@
 
 function getVisualisationData(userId,workboard_id) {
     var requestData ={"data":{"userId":userId,"workboard_id":workboard_id}};
-$.ajax({
+return $.ajax({
     url: "http://10.90.21.43:8081/visualization-service/getVisualizationData",                
     type: "POST",
     data: JSON.stringify(requestData),
@@ -20,11 +20,12 @@ $.ajax({
        visualData=object;
        console.log("Visual Data:");
 	   console.log(visualData);
+     //return visualData;
     },
 	error: function(error)
 	{
 		alert('Error in getVisualisationData;' + eval(error));
 	}
  });
-  return visualData;
+  
 }

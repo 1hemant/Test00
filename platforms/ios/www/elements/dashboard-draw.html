@@ -6,14 +6,102 @@
 <script src="../scripts/getKettleData.js"></script>
 <script src="../scripts/getWorkboardData.js"></script>
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html" />
-<link rel="import" type="css" href="../css/whirlpool_loder.css" />
+<!--<link rel="import" type="css" href="../css/whirlpool_loder.css" />-->
 <dom-module id="dashboard-draw">
 
 <template>
 	<style>
+			.highcharts-container{
+				width:350px;
+			}
+		.cssload-container{
+			position:relative;
+		}
 			
-		
+		.cssload-whirlpool,
+		.cssload-whirlpool::before,
+		.cssload-whirlpool::after {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			border: 1px solid rgba(204,204,204,0.83);
+			border-left-color: rgb(209,94,209);
+			border-radius: 1374px;
+				-o-border-radius: 1374px;
+				-ms-border-radius: 1374px;
+				-webkit-border-radius: 1374px;
+				-moz-border-radius: 1374px;
+		}
 
+		.cssload-whirlpool {
+			margin: -34px 0 0 -34px;
+			height: 69px;
+			width: 69px;
+			animation: cssload-rotate 1750ms linear infinite;
+				-o-animation: cssload-rotate 1750ms linear infinite;
+				-ms-animation: cssload-rotate 1750ms linear infinite;
+				-webkit-animation: cssload-rotate 1750ms linear infinite;
+				-moz-animation: cssload-rotate 1750ms linear infinite;
+		}
+
+		.cssload-whirlpool::before {
+			content: "";
+			margin: -32px 0 0 -32px;
+			height: 61px;
+			width: 61px;
+			animation: cssload-rotate 1750ms linear infinite;
+				-o-animation: cssload-rotate 1750ms linear infinite;
+				-ms-animation: cssload-rotate 1750ms linear infinite;
+				-webkit-animation: cssload-rotate 1750ms linear infinite;
+				-moz-animation: cssload-rotate 1750ms linear infinite;
+		}
+
+		.cssload-whirlpool::after {
+			content: "";
+			margin: -40px 0 0 -40px;
+			height: 77px;
+			width: 77px;
+			animation: cssload-rotate 3500ms linear infinite;
+				-o-animation: cssload-rotate 3500ms linear infinite;
+				-ms-animation: cssload-rotate 3500ms linear infinite;
+				-webkit-animation: cssload-rotate 3500ms linear infinite;
+				-moz-animation: cssload-rotate 3500ms linear infinite;
+		}
+
+
+
+		@keyframes cssload-rotate {
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		@-o-keyframes cssload-rotate {
+			100% {
+				-o-transform: rotate(360deg);
+			}
+		}
+
+		@-ms-keyframes cssload-rotate {
+			100% {
+				-ms-transform: rotate(360deg);
+			}
+		}
+
+		@-webkit-keyframes cssload-rotate {
+			100% {
+				-webkit-transform: rotate(360deg);
+			}
+		}
+
+		@-moz-keyframes cssload-rotate {
+			100% {
+				-moz-transform: rotate(360deg);
+			}
+		}
+		.cssload-container.dashboard-draw {
+		    position: inherit;
+		}
 	</style>
 	<div id="container" style="height: 300px;width: 400px">
 		
@@ -88,30 +176,34 @@
             var self=this;
             self.loadingStart(); 
 			$.when(
-                    workboardData = getWorkboardData(userId,workboard_id),
-                    visualData = getVisualisationData(userId,workboard_id),
-                    kettleData = getKettleData(userId,workboard_id)
+                     getWorkboardData(userId,workboard_id),
+                     getVisualisationData(userId,workboard_id),
+                     getKettleData(userId,workboard_id)
 					
-			).done(function(){
-                     //self.loadingStop();
+			).done(function(workboardData,visualData,kettleData){
+				console.log("1");
+				$('#container').css("display","block");
+				$("#container").find("paper-material").remove();
+				self.createDashboard1();
 					
-                 });
-            $('#container').css("display","block");
-            $("#container").find("paper-material").remove();
-            self.createDashboard1();
+             });
+
         
         },
         createDashboard1:function()
         {    
-          var self=this;
-          $.each(workboardData.data,function(index,value)
-          {
-           	self.configuration=workboardData.data;
-                this.dataId = index;         
+        	console.log("2");
+			var self=this;
+			$.each(workboardData.data,function(index,value)
+			{
+				console.log("2.1");
+				self.configuration=workboardData.data;
+			    this.dataId = index;         
 				self.draw(index);
-          }); 
+			}); 
         },
 		resize:function(){
+			console.log("6");
 			if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
 				var chart= $(this.$.panelChart);
 				this.chartObj.setSize(chart.width()-50,chart.height()-50);
@@ -119,6 +211,7 @@
 			}
 		},
 		draw: function(dataId){
+			console.log("3");
 			var self=this;
 			//this.loadingStart();
 			try{
@@ -142,16 +235,19 @@
 			}
 		},		
 		customPreProcessor:function(data,temp){
+			console.log("4");
 			var func=new Function('data',atob(temp));
 			return func(data);
 		},
 		normalize:function(visualization,data,dataId){
+			console.log("5");
 			var result=visualization.configuration.result;
 			result['title']={text:""};
 			var div=document.createElement('paper-material');
 			div.setAttribute("elevation","2");
 			$(div).css("background-color","white");
-			$(div).css("height","auto");                
+			$(div).css("height","auto");
+			$(div).css("width","auto");                
 			$(div).css("margin","10px");
 			$(div).css("margin-bottom","20px");
 			$(div).css("padding","5px");
