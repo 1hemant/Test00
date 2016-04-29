@@ -11,9 +11,7 @@
 
 <template>
 	<style>
-			.highcharts-container{
-				width:350px;
-			}
+
 		.cssload-container{
 			position:relative;
 		}
@@ -205,7 +203,7 @@
 		resize:function(){
 			console.log("6");
 			if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
-				var chart= $(this.$.panelChart);
+				var chart= $(this.$.container);
 				this.chartObj.setSize(chart.width()-50,chart.height()-50);
 				this.chartObj.reflow();
 			}
@@ -245,12 +243,15 @@
 			result['title']={text:""};
 			var div=document.createElement('paper-material');
 			div.setAttribute("elevation","2");
-			$(div).css("background-color","white");
-			$(div).css("height","auto");
-			$(div).css("width","auto");                
-			$(div).css("margin","10px");
-			$(div).css("margin-bottom","20px");
-			$(div).css("padding","5px");
+			$(div).css({"background-color":"white",
+				"height":"auto",
+				"width":"auto",
+				"margin":"10px",
+				"margin-bottom":"20px",
+				"padding":"5px"
+
+			});
+
 			div.setAttribute("id","id"+dataId);
 			var title = document.createElement("h3");
 			div.appendChild(title);
@@ -260,6 +261,7 @@
 			if(result.hasOwnProperty('chart')){
 			  delete result.chart['renderTo'];
 					result.chart.renderTo=id;
+					
 				}else{
 				 result.chart={
 				  renderTo: id,
@@ -283,6 +285,8 @@
 						result['subtitle']={text:data['subtitleText']};
 					}
 				}
+					result.chart.height=400;
+					result.chart.width=350;
 				return result;
 		},
 
