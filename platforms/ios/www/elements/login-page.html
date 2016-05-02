@@ -5,7 +5,14 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html" />
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html" />
 <link rel="import" href="../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html" />
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html" />
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html" />
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
 <!-- import the custom css element -->
 
 <dom-module id="login-page" >
@@ -13,21 +20,33 @@
         <style>
           /* CSS rules for your element */
           form{
-                width: 380px;
-                margin: 4em auto;
+                width: 75%;
+                margin: 30% auto;
                 padding: 3em 2em 2em 2em;
                 background: #fafafa;
                 border: 1px solid #ebebeb;
                 box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
             }
+            .big{
+                  --iron-icon-height: 70px;
+                  --iron-icon-width: 70px;
+            }
+            #toggleButton {display:inline-block} /* to bring toggle button and question mark icon on same line*/
+            #id_1 {display:inline-block; padding-bottom:10px} /*to bring toggle button and question mark icon on same line*/
         </style>
   
     <!-- local DOM for your element -->
         <!-- This form is only used to display the elements -->
-        <form is="iron-form" method="get" action="/" id="loginForm">
+        <form is="iron-form" method="get" action="/" id="loginForm" class="container-fluid">
+          <h2><iron-icon icon="icons:cloud-queue" class="big"></iron-icon>Netlink</h2>
             <paper-input value="{{emailIdToPost::input}}" name="email" label="Email-ID" required auto-validate></paper-input>
-            <paper-input value="{{passwordToPost::input}}" name="password" label="Password" type="password" required auto-validate></paper-input>
-            <paper-checkbox name="read" required>You must check this box</paper-checkbox><br>
+            <paper-input value="{{passwordToPost::input}}" name="password" label="Password" type="password" required auto-validate></paper-input><br>
+            
+              <paper-toggle-button id="toggleButton"><p style="padding-bottom:10px"> Live Data </p></paper-toggle-button><iron-icon id="id_1" icon="icons:help-outline"></iron-icon>
+              <paper-tooltip for="id_1" offset="0">Live Data will slow down app considerably.</paper-tooltip>
+              <br><br>
+
+            <paper-checkbox name="read" required>You must check this box</paper-checkbox><br><br>
             <paper-button raised on-tap="_delayedSubmit" disabled id="loginFormSubmit">
                 <paper-spinner id="spinner" hidden></paper-spinner>Submit</paper-button>
             <paper-button raised on-tap="_reset">Reset</paper-button>

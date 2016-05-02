@@ -9,6 +9,12 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.netlink.Test00"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.netlink.Test00"
+        },
+        "cordova-plugin-sqlite": {
+            "PACKAGE_NAME": "com.netlink.Test00"
         }
     },
     "dependent_plugins": {}
