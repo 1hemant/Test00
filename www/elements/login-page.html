@@ -32,7 +32,7 @@
                   --iron-icon-width: 70px;
             }
             #toggleButton {display:inline-block} /* to bring toggle button and question mark icon on same line*/
-            #id_1 {display:inline-block} /*to bring toggle button and question mark icon on same line*/
+            #id_1 {display:inline-block; padding-bottom:10px} /*to bring toggle button and question mark icon on same line*/
         </style>
   
     <!-- local DOM for your element -->
@@ -42,7 +42,7 @@
             <paper-input value="{{emailIdToPost::input}}" name="email" label="Email-ID" required auto-validate></paper-input>
             <paper-input value="{{passwordToPost::input}}" name="password" label="Password" type="password" required auto-validate></paper-input><br>
             
-              <paper-toggle-button id="toggleButton"> Live Data </paper-toggle-button><iron-icon id="id_1" icon="icons:help-outline"></iron-icon>
+              <paper-toggle-button id="toggleButton"><p style="padding-bottom:10px"> Live Data </p></paper-toggle-button><iron-icon id="id_1" icon="icons:help-outline"></iron-icon>
               <paper-tooltip for="id_1" offset="0">Live Data will slow down app considerably.</paper-tooltip>
               <br><br>
 
