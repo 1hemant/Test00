@@ -11,7 +11,9 @@
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html" />
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html" />
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html" />
-<link rel="import" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<!-- import the java script libraries -->
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../js/index.js"></script>
 
 <!-- import the custom css element -->
 
@@ -42,7 +44,8 @@
             <paper-input value="{{emailIdToPost::input}}" name="email" label="Email-ID" required auto-validate></paper-input>
             <paper-input value="{{passwordToPost::input}}" name="password" label="Password" type="password" required auto-validate></paper-input><br>
             
-              <paper-toggle-button id="toggleButton"><p style="padding-bottom:10px"> Live Data </p></paper-toggle-button><iron-icon id="id_1" icon="icons:help-outline"></iron-icon>
+              <paper-toggle-button id="toggleButton"><p style="padding-bottom:10px"> Live data. </p></paper-toggle-button><iron-icon id="id_1" icon="icons:help-outline"></iron-icon>
+              <paper-toggle-button id="toggleButton2" checked="true"><p> Save data locally. </p></paper-toggle-button>
               <paper-tooltip for="id_1" offset="0">Live Data will slow down app considerably.</paper-tooltip>
               <br><br>
 
@@ -68,6 +71,7 @@
 
   <script>
     // element registration
+    var db=null;
     Polymer({
       is: "login-page",
       properties:{
@@ -124,7 +128,7 @@
       spinner.hidden = true;
       loginFormSubmit.disabled = false;
       //this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
-      console.log("Submit Clicked");
+      //if((File.Exists("careCloud.db")) && )
       window.location.href="./elements/base-element.html"
     },
     _handleResponse:function(r){
@@ -134,7 +138,21 @@
         }else{
             console.log("Login unsuccessful");
         }
+    },
+    ready:function(){
+
+        //document.addEventListener("deviceready", function(){
+            db = window.sqlitePlugin.openDatabase({name: "careCloud.db"});
+            window.alert("document is ready");
+            window.alert(db);
+            db.transaction(function(tx) {
+                tx.executeSql("CREATE TABLE IF NOT EXISTS careCloud (name text primary key, data text)");
+            }, function(err){
+                alert("An error occurred while initializing the app");
+            });
+        //}, false);
     }
+
 
     });
   </script>
