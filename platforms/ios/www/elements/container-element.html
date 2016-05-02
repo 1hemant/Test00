@@ -64,8 +64,7 @@
           <paper-toolbar>
             <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
             <span class="title">Title</span>
-            <paper-icon-button icon="icons:home"></paper-icon-button>
-            <paper-icon-button icon="refresh"></paper-icon-button>
+            <paper-icon-button icon="icons:home" on-tap="_onHomeTap"></paper-icon-button>
               <paper-menu-button>
                 <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
                 <paper-menu class="dropdown-content">
@@ -82,7 +81,6 @@
         </section>
         <section id="dashboard" style="display:none">
           <h1>Dashboard</h1>
-          
           <dashboard-draw></dashboard-draw>
         </section>
         </paper-header-panel>
@@ -190,7 +188,10 @@
             });
             //alert("Logout ");
         },
-            appLogout:function()
+        _onHomeTap:function(e){       
+            window.location.reload();
+        },
+        appLogout:function()
         {
             if(navigator.app){
                 navigator.app.exitApp();
