@@ -61,9 +61,9 @@
             <paper-input value="{{emailIdToPost::input}}" name="email" label="Email-ID" required auto-validate></paper-input>
             <paper-input value="{{passwordToPost::input}}" name="password" label="Password" type="password" required auto-validate></paper-input><br>
             
-              <paper-toggle-button id="toggleButton1"><p style="padding-bottom:10px"> Live data. </p></paper-toggle-button><iron-icon id="id_1" icon="icons:help-outline"></iron-icon>
+              <paper-toggle-button id="toggleButton1"><p style="padding-bottom:10px"> Live data. </p></paper-toggle-button>
               <paper-toggle-button id="toggleButton2" checked><p> Save data locally. </p></paper-toggle-button>
-              <paper-tooltip for="id_1" offset="0">Live Data will slow down app considerably.</paper-tooltip>
+              
               <br><br>
 
             <paper-checkbox name="read" required>You must check this box</paper-checkbox><br><br>
@@ -74,7 +74,7 @@
         </form>
         <iron-ajax
             id="loginAjax"
-            url="https://rsh-analytics.thecarecloud.com/login-service-mobile/login"
+            url="jdbc:mysql://10.90.21.45:3308/ccPlatform"
             headers='{"Content-Type": "application/json;charset=utf-8"}'
             method="POST"
             content-type="application/json"
@@ -93,12 +93,12 @@
       is: "login-page",
       properties:{
           emailIdToPost: {
-              value:'stiwari@netlink.com',
+              value:'app_user',
               type: String,
               notify: true
           },
           passwordToPost: {
-              value:'AA!11aaa',
+              value:"ccappuser@devbox|yE\5Km",
               type: String,
               notify: true
           }
@@ -127,12 +127,12 @@
       //var loginCredentials='email='+this.emailIdToPost+'&password='+this.passwordToPost;
       //this.$.loginAjax.body=loginCredentials;
       //console.log(loginCredentials);
-      /*
+      
       loginAjax.body={
           'email':emailIdToPost,
           'password':passwordToPost
-      },*/
-      //this.$.loginAjax.generateRequest();
+      },
+      this.$.loginAjax.generateRequest();
     },
     
     _reset:function(event) {
@@ -146,9 +146,9 @@
       loginFormSubmit.disabled = false;
       
         if (this.$.toggleButton1.checked) {
-          window.alert("do something if when checked");
+          //window.alert("do something if when checked");
         } else {
-          window.alert("do something if not checked");
+          //window.alert("do something if not checked");
           //Check if we have local data to show.
         }
        
@@ -165,22 +165,26 @@
         }
     },
     ready:function(){
+      //string path = Path.Combine(ApplicationData.Current.LocalFolder.Path, careCloud.db);
+      //if (File.Exists(path)) { //your code here }
+        
       this.$.toggleButton1.addEventListener('change', function () {
         if (this.checked) {
-          console.log("toggleButton1 is checked");
+          //console.log("toggleButton1 is checked");
         } else {
-          window.alert("Old data will be ussed if available!");
+          //window.alert("Old data will be ussed if available!");
         }
       }); 
         //document.addEventListener("deviceready", function(){
-            db = window.sqlitePlugin.openDatabase({name: "careCloud.db"});
-            window.alert("document is ready");
-            window.alert(db);
-            db.transaction(function(tx) {
-                tx.executeSql("CREATE TABLE IF NOT EXISTS careCloud (name text primary key, data text)");
-            }, function(err){
-                alert("An error occurred while initializing the app");
-            });
+
+            //db = window.sqlitePlugin.openDatabase({name: "careCloud.db"});
+            //window.alert("document is ready");
+            //window.alert(db);
+            //db.transaction(function(tx) {
+            //    tx.executeSql("CREATE TABLE IF NOT EXISTS careCloud (name text primary key, data text)");
+            //}, function(err){
+            //    alert("An error occurred while initializing the app");
+            //});
         //}, false);
     }
 

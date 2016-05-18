@@ -1,6 +1,7 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../services/getRepositoryData.js"></script>
 <!-- import the polymer drawer panel custom element -->
 <link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html" />
 <link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html" />
@@ -45,7 +46,8 @@
                         <paper-item class="menu-trigger" data-id="{{dbNames.workboardId}}">{{dbNames.name}}</paper-item>
                         <paper-menu class="menu-content">
                             <template is="dom-repeat" items="{{dbNames.value}}" as="value">
-                                <paper-item id="{{value.dashboardId}}" on-tap="_onSubItemsTapped">{{value.name}}</paper-item>
+								
+                                <paper-item data-owner="{{value.owner}}" id="{{value.dashboardId}}" on-tap="_onSubItemsTapped">{{value.name}}{{value.owner}}</paper-item>
                             </template>
                         </paper-menu>
                     </template>
@@ -97,24 +99,41 @@
     </template>
     <script>
         var owner;
+        var data;
+        
         Polymer({
         is:"container-element",
         properties:{
           userId: {
           type: String,
-          value: 6
+          value: 2
         },
         workboard_id:{
             type: String,
-            value: 3
+            value: 1
         }  
         },
             attached:function()
         {               
             var self=this; 
             var requestData ={"data":{"userId":this.userId}};
+			console.log("data calling will start soon");
+           // console.log(this.userId);
+		   /*
+           this.async(function(){
+            //console.log(self.userId)
+          var repositoryData={};
+            repositoryData = getRepositoryData(self.userId);
+            //console.log(self.userId)
+            console.log("repo data");
+            console.log(repositoryData);
+            
+           })
+		   */
+            //self.data = repositoryData.responseJSON.data.dashboards;
+            
              $.ajax({
-                    url: "https://rsh-analytics.thecarecloud.com/repository-service/getRepository",  
+                    url: "http://10.90.21.22:8081/repository-service/getRepository",  
                     type: "POST",
                     data: JSON.stringify(requestData),
                     contentType: 'application/json; charset=utf-8',
@@ -122,21 +141,35 @@
                     success: function(object)
                     {                      
                         self.data=object.data.dashboards;
-                        owner=object.data.dashboards[0].value[1].owner;
-                    }
+						console.log("getRepository");
+                        console.log(object);
+                        //owner=object.data.dashboards[0].value[1].owner;
+                    },
+					error: function(error)
+					{
+						alert('Error in getRepository;' + eval(error));
+					}
                 })
         },
-        _onSubItemsTapped:function()
+        _onSubItemsTapped:function(event)
         {
-            $('#home').css("display","none");
+		
+            console.log(event.target.dataOwner)
+			$('#home').css("display","none");
             $('#dashboard').css("display","block");
             this.$.drawerPanel.togglePanel();
             //console.log("_onSubItemsTapped:function called");
             id=event.target.getAttribute("id");
-            //console.log(event.target.getAttribute("id"));
-            //console.log(owner,"owner");
-            //console.log(id,"id");
-            document.getElementsByTagName('dashboard-draw')[0].createDashboard(owner,id);
+            owner=event.target.dataOwner;
+            //console.log("jsdhbfkhdjf");
+            //console.log(event.target.dataOwner);
+            //owner=data.dashboards[0].value[1].owner;
+            //window.alert(owner);
+            //console.log("owner");
+            //console.log(owner);
+            //console.log("id");
+			//console.log(id);
+            document.getElementsByTagName('dashboard-draw')[0].dataCollection(owner,id);
             //console.log(document.getElementsByTagName('dashboard-demo'));
             //window.alert(event.target.getAttribute("id"));
         },
@@ -159,11 +192,11 @@
                 "authToken":localStorage.getItem("accessToken")
             };
             $.ajax({
-                url: "http://10.90.21.43:8888/logout-service/logout",                
+                url: "http://10.90.21.22:8081/logout-service/logout",                
                 type: "POST",
                 data: JSON.stringify(requestData),
                 contentType: 'application/json; charset=utf-8',
-                beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
+                //beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
                 success: function(object)
                 { 
                     localStorage.setItem("accessToken",0);
